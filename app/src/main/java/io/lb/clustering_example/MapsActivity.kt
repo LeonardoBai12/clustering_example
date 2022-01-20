@@ -2,12 +2,15 @@ package io.lb.clustering_example
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 
-class MapsActivity : AppCompatActivity() {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val users = arrayListOf<User>()
 
@@ -18,6 +21,7 @@ class MapsActivity : AppCompatActivity() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync {
             setUpClusterManager(it)
+            onMapReady(it)
         }
     }
 
@@ -43,5 +47,11 @@ class MapsActivity : AppCompatActivity() {
         for (i in latLngs.indices) {
             users.add(User("Account$i", latLngs[i]))
         }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        val sydney = users[0].latLng
+        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 }
